@@ -44,6 +44,9 @@ parser.add_argument('--model-dir', default='./model-mnist-smallCNN',
                     help='directory of model for saving checkpoint')
 parser.add_argument('--save-freq', '-s', default=25, type=int, metavar='N',
                     help='save frequency')
+parser.add_argument('--random',
+                    default=True,
+                    help='random initialization for PGD')
 args = parser.parse_args()
 
 # settings

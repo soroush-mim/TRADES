@@ -78,7 +78,7 @@ def _pgd_whitebox(model,
                   num_steps=args.num_steps,
                   step_size=args.step_size):
     out = model(X)
-    err = (out.data.max(1)[1] != y.data).float().sum()
+    err = (out.data.max(1)[1] != y.data).float().sum().item()
     X_pgd = Variable(X.data, requires_grad=True)
     if args.random:
         random_noise = torch.FloatTensor(*X_pgd.shape).uniform_(-epsilon, epsilon).to(device)
@@ -98,7 +98,7 @@ def _pgd_whitebox(model,
         X_pgd = Variable(torch.clamp(X_pgd, 0, 1.0), requires_grad=True)
 
     output = model(X_pgd)
-    err_pgd = (output.data.max(1)[1] != y.data).float().sum()
+    err_pgd = (output.data.max(1)[1] != y.data).float().sum().item()
     adv_loss = F.cross_entropy(output, y, size_average=False).item()
     #print('err pgd (white-box): ', err_pgd)
     return err, err_pgd, adv_loss
@@ -123,7 +123,8 @@ def eval_adv_test_whitebox(model, device, test_loader):
     print('natural_err_total: ', natural_err_total)
     print('robust_err_total: ', robust_err_total)
     
-    adv_acc = 1 - (natural_err_total / len(test_loader.dataset))
+    adv_acc = 1 - (robust_err_total / len(test_loader.dataset))
+    adv_loss /= len(test_loader.dataset)
                    
     return adv_loss, adv_acc
 
@@ -229,12 +230,14 @@ def main():
         print('================================================================')
         adv_test_loss, adv_test_accuracy = eval_adv_test_whitebox(model, device, test_loader)
         adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
+        print('================================================================')
 
         print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
         adv_test_loss, 100. * adv_test_accuracy))
 
         print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
         adv_train_loss, 100. * adv_training_accuracy))
+        print('================================================================')
 
         train_losses.append(train_loss)
         test_losses.append(test_loss)

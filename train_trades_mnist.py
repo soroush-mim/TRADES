@@ -231,10 +231,10 @@ def main():
         adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
 
         print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
-        adv_test_loss, 100. adv_test_accuracy))
+        adv_test_loss, 100. * adv_test_accuracy))
 
         print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
-        adv_train_loss, 100. adv_training_accuracy))
+        adv_train_loss, 100. * adv_training_accuracy))
 
         train_losses.append(train_loss)
         test_losses.append(test_loss)

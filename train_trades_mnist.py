@@ -42,7 +42,7 @@ parser.add_argument('--log-interval', type=int, default=20, metavar='N',
                     help='how many batches to wait before logging training status')
 parser.add_argument('--model-dir', default='./model-mnist-smallCNN',
                     help='directory of model for saving checkpoint')
-parser.add_argument('--save-freq', '-s', default=5, type=int, metavar='N',
+parser.add_argument('--save-freq', '-s', default=25, type=int, metavar='N',
                     help='save frequency')
 args = parser.parse_args()
 
@@ -120,7 +120,7 @@ def eval_adv_test_whitebox(model, device, test_loader):
     print('natural_err_total: ', natural_err_total)
     print('robust_err_total: ', robust_err_total)
     
-    adv_acc = 1 - (natural_err_total / len(test_loader.dataset)
+    adv_acc = 1 - (natural_err_total / len(test_loader.dataset))
                    
     return adv_loss, adv_acc
 
@@ -237,6 +237,12 @@ def main():
         adv_train_accs.append(adv_training_accuracy)
         adv_test_accs.append(adv_test_accuracy)
 
+        if epoch % args.save_freq == 0:
+            torch.save(model.state_dict(),
+                       os.path.join(model_dir, 'model-nn-epoch{}.pt'.format(epoch)))
+            torch.save(optimizer.state_dict(),
+                       os.path.join(model_dir, 'opt-nn-checkpoint_epoch{}.tar'.format(epoch)))
+
     
     plt.plot(train_accs, label = 'train_acc')
     plt.plot(test_accs, label = 'test_acc')
@@ -262,14 +268,6 @@ def main():
     plt.plot(adv_test_losses, label = 'test_robust_loss')
     plt.legend()
     plt.savefig('adv losses.png')
-
-
-        # save checkpoint
-        if epoch % args.save_freq == 0:
-            torch.save(model.state_dict(),
-                       os.path.join(model_dir, 'model-nn-epoch{}.pt'.format(epoch)))
-            torch.save(optimizer.state_dict(),
-                       os.path.join(model_dir, 'opt-nn-checkpoint_epoch{}.tar'.format(epoch)))
 
 
 if __name__ == '__main__':

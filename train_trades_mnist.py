@@ -100,7 +100,7 @@ def _pgd_whitebox(model,
     output = model(X_pgd)
     err_pgd = (output.data.max(1)[1] != y.data).float().sum()
     adv_loss = F.cross_entropy(output, y, size_average=False).item()
-    print('err pgd (white-box): ', err_pgd)
+    #print('err pgd (white-box): ', err_pgd)
     return err, err_pgd, adv_loss
 
 def eval_adv_test_whitebox(model, device, test_loader):
@@ -229,6 +229,12 @@ def main():
         print('================================================================')
         adv_test_loss, adv_test_accuracy = eval_adv_test_whitebox(model, device, test_loader)
         adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
+
+        print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
+        adv_test_loss, 100. adv_test_accuracy))
+
+        print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
+        adv_train_loss, 100. adv_training_accuracy))
 
         train_losses.append(train_loss)
         test_losses.append(test_loss)

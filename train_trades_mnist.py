@@ -30,7 +30,9 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--epsilon', default=0.3,
                     help='perturbation')
-parser.add_argument('--num-steps', default=40,
+parser.add_argument('--num-steps', default=10,
+                    help='perturb number of steps')
+parser.add_argument('--attack-num-steps', default=40,type=int,
                     help='perturb number of steps')
 parser.add_argument('--step-size', default=0.01,
                     help='perturb step size')
@@ -75,7 +77,7 @@ def _pgd_whitebox(model,
                   X,
                   y,
                   epsilon=args.epsilon,
-                  num_steps=args.num_steps,
+                  num_steps=args.attack_num_steps,
                   step_size=args.step_size):
     out = model(X)
     err = (out.data.max(1)[1] != y.data).float().sum().item()

@@ -20,9 +20,9 @@ parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='input batch size for training (default: 128)')
 parser.add_argument('--test-batch-size', type=int, default=128, metavar='N',
                     help='input batch size for testing (default: 128)')
-parser.add_argument('--epochs', type=int, default=200, metavar='N',
+parser.add_argument('--epochs', type=int, default=100, metavar='N',
                     help='number of epochs to train')
-parser.add_argument('--lr', type=float, default=0.1, metavar='LR',
+parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                     help='learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='SGD momentum')
@@ -198,9 +198,9 @@ def eval_test(model, device, test_loader):
 def adjust_learning_rate(optimizer, epoch):
     """decrease the learning rate"""
     lr = args.lr
-    if epoch >= 100:
+    if epoch >= 50:
         lr = args.lr * 0.1
-    if epoch >= 150:
+    if epoch >= 75:
         lr = args.lr * 0.01
     if epoch >= 200:
         lr = args.lr * 0.001

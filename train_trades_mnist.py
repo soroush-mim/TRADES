@@ -20,15 +20,15 @@ parser.add_argument('--batch-size', type=int, default=128, metavar='N',
                     help='input batch size for training (default: 128)')
 parser.add_argument('--test-batch-size', type=int, default=128, metavar='N',
                     help='input batch size for testing (default: 128)')
-parser.add_argument('--epochs', type=int, default=100, metavar='N',
+parser.add_argument('--epochs', type=int, default=200, metavar='N',
                     help='number of epochs to train')
-parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
+parser.add_argument('--lr', type=float, default=0.1, metavar='LR',
                     help='learning rate')
 parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
                     help='SGD momentum')
 parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
-parser.add_argument('--epsilon', default=0.3,
+parser.add_argument('--epsilon', default=0.3, type=float,
                     help='perturbation')
 parser.add_argument('--num-steps', default=10,
                     help='perturb number of steps')
@@ -198,11 +198,11 @@ def eval_test(model, device, test_loader):
 def adjust_learning_rate(optimizer, epoch):
     """decrease the learning rate"""
     lr = args.lr
-    if epoch >= 55:
+    if epoch >= 100:
         lr = args.lr * 0.1
-    if epoch >= 75:
+    if epoch >= 150:
         lr = args.lr * 0.01
-    if epoch >= 90:
+    if epoch >= 200:
         lr = args.lr * 0.001
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
@@ -231,14 +231,14 @@ def main():
         test_loss, test_accuracy = eval_test(model, device, test_loader)
         print('================================================================')
         adv_test_loss, adv_test_accuracy = eval_adv_test_whitebox(model, device, test_loader)
-        adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
+        # adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
         print('================================================================')
 
         print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
         adv_test_loss, 100. * adv_test_accuracy))
 
-        print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
-        adv_train_loss, 100. * adv_training_accuracy))
+        # print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
+        # adv_train_loss, 100. * adv_training_accuracy))
         print('================================================================')
 
         train_losses.append(train_loss)
@@ -246,9 +246,9 @@ def main():
         train_accs.append(training_accuracy)
         test_accs.append(test_accuracy)
 
-        adv_train_losses.append(adv_train_loss)
+        # adv_train_losses.append(adv_train_loss)
         adv_test_losses.append(adv_test_loss)
-        adv_train_accs.append(adv_training_accuracy)
+        # adv_train_accs.append(adv_training_accuracy)
         adv_test_accs.append(adv_test_accuracy)
 
         if epoch % args.save_freq == 0:
@@ -264,7 +264,7 @@ def main():
     plt.savefig('accs.png')
     plt.clf()
 
-    plt.plot(adv_train_accs, label= 'train_acc_robust')
+    # plt.plot(adv_train_accs, label= 'train_acc_robust')
     plt.plot(adv_test_accs, label = 'test_robust_accs')
     plt.legend()
     plt.savefig('adv accs.png')
@@ -278,7 +278,7 @@ def main():
     plt.savefig('losses.png')
     plt.clf()
 
-    plt.plot(adv_train_losses, label = 'train_loss_robust')
+    # plt.plot(adv_train_losses, label = 'train_loss_robust')
     plt.plot(adv_test_losses, label = 'test_robust_loss')
     plt.legend()
     plt.savefig('adv losses.png')

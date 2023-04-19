@@ -13,6 +13,7 @@ from models.small_cnn import *
 from trades import trades_loss
 
 from copy import deepcopy
+import wandb
 
 from matplotlib import pyplot as plt
 

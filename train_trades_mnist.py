@@ -217,58 +217,58 @@ def main():
     train_accs, test_accs = [], []
     adv_train_losses, adv_test_losses = [], []
     adv_train_accs, adv_test_accs = [], []
-    wandb.login(key='6b9ec4f40fff163732693cc1f749170bcc98b8ae')
+    wandb.login(key='6b9ec4f40fff163732693cc1f749170bcc98b8ae')    
     config=args.__dict__
 
 
     with wandb.init(project='re_init',  config=config, name=trades_mnist):
-    for epoch in range(1, args.epochs + 1):
-        # adjust learning rate for SGD
-        adjust_learning_rate(optimizer, epoch)
+        for epoch in range(1, args.epochs + 1):
+            # adjust learning rate for SGD
+            adjust_learning_rate(optimizer, epoch)
 
-        # adversarial training
-        train(args, model, device, train_loader, optimizer, epoch)
+            # adversarial training
+            train(args, model, device, train_loader, optimizer, epoch)
 
-        # evaluation on natural examples
-        print('================================================================')
-        train_loss, training_accuracy = eval_train(model, device, train_loader)
-        test_loss, test_accuracy = eval_test(model, device, test_loader)
-        print('================================================================')
-        adv_test_loss, adv_test_accuracy = eval_adv_test_whitebox(model, device, test_loader)
-        # adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
-        print('================================================================')
+            # evaluation on natural examples
+            print('================================================================')
+            train_loss, training_accuracy = eval_train(model, device, train_loader)
+            test_loss, test_accuracy = eval_test(model, device, test_loader)
+            print('================================================================')
+            adv_test_loss, adv_test_accuracy = eval_adv_test_whitebox(model, device, test_loader)
+            # adv_train_loss, adv_training_accuracy = eval_adv_test_whitebox(model, device, train_loader)
+            print('================================================================')
 
-        print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
-        adv_test_loss, 100. * adv_test_accuracy))
+            print('ADV Test: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
+            adv_test_loss, 100. * adv_test_accuracy))
 
-        # print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
-        # adv_train_loss, 100. * adv_training_accuracy))
-        print('================================================================')
+            # print('ADV Train: Average loss: {:.4f}, Accuracy: {:.4f}%'.format(
+            # adv_train_loss, 100. * adv_training_accuracy))
+            print('================================================================')
 
-        train_losses.append(train_loss)
-        test_losses.append(test_loss)
-        train_accs.append(training_accuracy)
-        test_accs.append(test_accuracy)
+            train_losses.append(train_loss)
+            test_losses.append(test_loss)
+            train_accs.append(training_accuracy)
+            test_accs.append(test_accuracy)
 
-        # adv_train_losses.append(adv_train_loss)
-        adv_test_losses.append(adv_test_loss)
-        # adv_train_accs.append(adv_training_accuracy)
-        adv_test_accs.append(adv_test_accuracy)
+            # adv_train_losses.append(adv_train_loss)
+            adv_test_losses.append(adv_test_loss)
+            # adv_train_accs.append(adv_training_accuracy)
+            adv_test_accs.append(adv_test_accuracy)
 
-        wandb.log({'train_loss':train_loss} , step = epoch)
-        wandb.log({'test_loss':test_loss} , step = epoch)
-        wandb.log({'training_accuracy':training_accuracy} , step = epoch)
-        wandb.log({'test_accuracy':test_accuracy} , step = epoch)
-        wandb.log({'adv_test_loss':adv_test_loss} , step = epoch)
-        wandb.log({'adv_test_accuracy':adv_test_accuracy} , step = epoch)
-        # wandb.log({'adv_train_loss':adv_train_loss} , step = epoch)
-        # wandb.log({'adv_training_accuracy':adv_training_accuracy} , step = epoch)
+            wandb.log({'train_loss':train_loss} , step = epoch)
+            wandb.log({'test_loss':test_loss} , step = epoch)
+            wandb.log({'training_accuracy':training_accuracy} , step = epoch)
+            wandb.log({'test_accuracy':test_accuracy} , step = epoch)
+            wandb.log({'adv_test_loss':adv_test_loss} , step = epoch)
+            wandb.log({'adv_test_accuracy':adv_test_accuracy} , step = epoch)
+            # wandb.log({'adv_train_loss':adv_train_loss} , step = epoch)
+            # wandb.log({'adv_training_accuracy':adv_training_accuracy} , step = epoch)
 
-        if epoch % args.save_freq == 0:
-            torch.save(model.state_dict(),
-                       os.path.join(model_dir, 'model-nn-epoch{}.pt'.format(epoch)))
-            torch.save(optimizer.state_dict(),
-                       os.path.join(model_dir, 'opt-nn-checkpoint_epoch{}.tar'.format(epoch)))
+            if epoch % args.save_freq == 0:
+                torch.save(model.state_dict(),
+                        os.path.join(model_dir, 'model-nn-epoch{}.pt'.format(epoch)))
+                torch.save(optimizer.state_dict(),
+                        os.path.join(model_dir, 'opt-nn-checkpoint_epoch{}.tar'.format(epoch)))
 
     
     plt.plot(train_accs, label = 'train_acc')

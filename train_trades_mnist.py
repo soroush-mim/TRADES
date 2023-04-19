@@ -31,7 +31,7 @@ parser.add_argument('--no-cuda', action='store_true', default=False,
                     help='disables CUDA training')
 parser.add_argument('--epsilon', default=0.3, type=float,
                     help='perturbation')
-parser.add_argument('--num-steps', default=10,
+parser.add_argument('--num-steps', default=10, type=int,
                     help='perturb number of steps')
 parser.add_argument('--attack-num-steps', default=40,type=int,
                     help='perturb number of steps')

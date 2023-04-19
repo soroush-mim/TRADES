@@ -221,7 +221,7 @@ def main():
     config=args.__dict__
 
 
-    with wandb.init(project='re_init',  config=config, name=trades_mnist):
+    with wandb.init(project='re_init',  config=config, name='trades_mnist'):
         for epoch in range(1, args.epochs + 1):
             # adjust learning rate for SGD
             adjust_learning_rate(optimizer, epoch)

@@ -199,12 +199,12 @@ def eval_test(model, device, test_loader):
 def adjust_learning_rate(optimizer, epoch):
     """decrease the learning rate"""
     lr = args.lr
-    if epoch >= 50:
+    if epoch >= 100:
         lr = args.lr * 0.1
-    if epoch >= 75:
+    if epoch >= 150:
         lr = args.lr * 0.01
-    if epoch >= 200:
-        lr = args.lr * 0.001
+    # if epoch >= 200:
+    #     lr = args.lr * 0.001
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
